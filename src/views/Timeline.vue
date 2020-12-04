@@ -57,3 +57,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+#site-body {
+  padding-top: 0rem;
+}
+</style>
