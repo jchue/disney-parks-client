@@ -23,6 +23,11 @@ const routes = [
     name: 'Timeline',
     component: () => import('../views/Timeline.vue'),
   },
+  {
+    path: '/beta',
+    name: 'CustomTimeline',
+    component: () => import('../views/CustomTimeline.vue'),
+  },
 ];
 
 const router = new VueRouter({
