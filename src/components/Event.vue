@@ -1,11 +1,14 @@
 <template>
   <div class="event" v-bind:style="'margin-left: ' + positionLeft + '%; width: ' + width + '%;'">
-    <slot></slot>
+    <span class="name"><slot></slot></span>
     <div class="overlay">
-      {{ startDate }} - {{ endDate }}
-      ({{ duration.segmented.years }} Years,
-      {{ duration.segmented.months }} Months,
-      {{ Math.floor(duration.segmented.days) }} Days)
+      <span class="dates">
+        {{ startDate }} - {{ endDate }}
+
+        ({{ duration.segmented.years }} Years,
+        {{ duration.segmented.months }} Months,
+        {{ Math.floor(duration.segmented.days) }} Days)
+      </span>
     </div>
   </div>
 </template>
@@ -93,18 +96,34 @@ export default {
 .event {
   background-color: #79b898;
   box-sizing: border-box;
-  color: #000;
   font-size: 0.875rem;
   margin-bottom: 1rem;
-  padding: 0.313rem 0.5rem;
+  overflow: hidden;
+  padding: 0.438rem 0.5rem;
   white-space: nowrap;
+
+  &:hover {
+    cursor: pointer;
+    overflow: visible;
+  }
+}
+
+.name {
+  font-weight: bold;
 }
 
 .overlay {
-  display: none;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s;
 }
 
 .event:hover .overlay {
-  display: block;
+  max-height: 999rem;
+  overflow: visible;
+}
+
+.dates {
+  font-size: 0.75rem;
 }
 </style>

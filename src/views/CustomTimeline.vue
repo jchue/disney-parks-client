@@ -1,10 +1,14 @@
 <template>
   <div class="timeline">
-    <Event v-for="event in events" v-bind:key="event._id" class="event"
-    v-bind:start="event.startDate" v-bind:end="event.endDate"
-    v-bind:basis="basis" v-bind:epoch="epoch">
-      {{ event.name }}
-    </Event>
+    <div v-for="(clump, clumpIndex) in clumps" v-bind:key="clump.name" class="clump">
+      <Event
+      v-for="event in clump.branches" v-bind:key="event._id"
+      v-bind:start="event.startDate" v-bind:end="event.endDate"
+      v-bind:basis="basis" v-bind:epoch="epoch"
+      v-on:click.native="getClumps(event._id, clumpIndex)">
+        {{ event.name }} {{ event.branches }}
+      </Event>
+    </div>
   </div>
 </template>
 
@@ -22,20 +26,12 @@ export default {
       basis: 23884,
       epoch: '1955-07-17T00:00:00.000Z',
       events: [],
-      chartData: [
-        ['group', 'name', 'start', 'end', 'id'],
-      ],
+      clumps: [],
     };
   },
   async mounted() {
-    const url = `${process.env.VUE_APP_API}/events`;
-    this.events = (await axios.get(url)).data.data;
-    this.events = this.events.map((event) => ({
-      id: event._id,
-      name: event.name,
-      startDate: event.startDate,
-      endDate: event.endDate || null,
-    }));
+    // Get clumps of root node
+    this.getClumps('5fcc2795f9da8a9c8487997b', 0);
   },
   methods: {
     formatDate(rawDate) {
@@ -54,9 +50,49 @@ export default {
 
       return duration.days;
     },
+    async getClumps(id, clumpIndex) {
+      // Get clumps of selected event
+      const url = `${process.env.VUE_APP_API}/events/${id}`;
+      let { clumps } = (await axios.get(url)).data.data;
+      clumps = this.sortClumps(clumps);
+
+      // Insert clumps after clump of selected event
+      this.clumps.splice((clumpIndex + 1), 0, ...clumps);
+    },
+    sortClumps(clumps) {
+      // Sort the branches within each clump
+      clumps.forEach((clump) => {
+        clump.branches.sort((a, b) => {
+          const startDateA = DateTime.fromISO(a.startDate);
+          const startDateB = DateTime.fromISO(b.startDate);
+          const dateDiff = startDateA.diff(startDateB, 'days');
+
+          return dateDiff.days;
+        });
+      });
+
+      // Sort the clumps themselves
+      const sortedClumps = clumps.sort((a, b) => {
+        // Compare the earliest branches from each clump
+        const firstStartDateA = DateTime.fromISO(a.branches[0].startDate);
+        const firstStartDateB = DateTime.fromISO(b.branches[0].startDate);
+        const dateDiff = firstStartDateA.diff(firstStartDateB, 'days');
+
+        return dateDiff.days;
+      });
+
+      return sortedClumps;
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.clump {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.test {
+  color: red;
+}
 </style>
