@@ -28,6 +28,11 @@ const routes = [
     name: 'CustomTimeline',
     component: () => import('../views/CustomTimeline.vue'),
   },
+  {
+    path: '/:eventId',
+    name: 'Event',
+    component: () => import('../views/Event.vue'),
+  },
 ];
 
 const router = new VueRouter({

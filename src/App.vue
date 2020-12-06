@@ -13,7 +13,7 @@
       </nav>
     </header>
     <transition name="fade" mode="out-in">
-      <router-view id="site-body"/>
+      <router-view :key="$route.fullPath" id="site-body"/>
     </transition>
   </div>
 </template>
@@ -25,8 +25,24 @@ body {
   margin: 0;
 }
 
-p {
+p,
+li {
   line-height: 1.8;
+}
+
+a {
+  color: #2c3e50;
+  transition: color 0.2s;
+
+  &:hover {
+    color: lighten(#2c3e50, 25%);
+  }
+}
+
+img {
+  display: block;
+  margin-bottom: 1rem;
+  max-width: 100%;
 }
 
 button {
@@ -47,6 +63,21 @@ button {
 .wrapper {
   margin: auto;
   max-width: 960px;
+}
+
+.align-left {
+  float: left;
+  margin-right: 1rem;
+}
+
+.align-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-right {
+  float: right;
+  margin-left: 1rem;
 }
 
 .fade-enter-active, .fade-leave-active {
@@ -87,6 +118,7 @@ button {
 
   li {
     display: inline-block;
+    line-height: 1;
   }
 
   a {
