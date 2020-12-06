@@ -3,6 +3,7 @@
     <div v-for="(clump, clumpIndex) in clumps" v-bind:key="clump.name" class="clump">
       <Event
       v-for="event in clump.branches" v-bind:key="event._id"
+      v-bind:event="event"
       v-bind:start="event.startDate" v-bind:end="event.endDate"
       v-bind:basis="basis" v-bind:epoch="epoch"
       v-on:click.native="getClumps(event._id, clumpIndex)">
@@ -34,15 +35,6 @@ export default {
     this.getClumps('5fcc2795f9da8a9c8487997b', 0);
   },
   methods: {
-    formatDate(rawDate) {
-      const newDate = new Date(rawDate);
-
-      const year = newDate.getFullYear();
-      const month = newDate.getMonth() + 1;
-      const day = newDate.getDate();
-
-      return `${month}/${day}/${year}`;
-    },
     calculateDuration(startDate, endDate) {
       const start = DateTime.fromISO(startDate);
       const end = DateTime.fromISO(endDate);

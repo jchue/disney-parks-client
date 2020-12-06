@@ -3,12 +3,14 @@
     <span class="name"><slot></slot></span>
     <div class="overlay">
       <span class="dates">
-        {{ startDate }} - {{ endDate }}
+        {{ start | formatDate }} - {{ end | formatDate }}
 
         ({{ duration.segmented.years }} Years,
         {{ duration.segmented.months }} Months,
         {{ Math.floor(duration.segmented.days) }} Days)
       </span>
+
+      <router-link v-bind:to="event._id" class="details-link">Details</router-link>
     </div>
   </div>
 </template>
@@ -47,25 +49,13 @@ export default {
     };
   },
   props: {
+    event: Object,
     basis: Number,
     epoch: String,
     start: String,
     end: String,
   },
   computed: {
-    startDate() {
-      const date = DateTime.fromISO(this.start);
-
-      return date.toLocaleString(DateTime.DATE_FULL);
-    },
-    endDate() {
-      if (this.end) {
-        const date = DateTime.fromISO(this.end);
-
-        return date.toLocaleString(DateTime.DATE_FULL);
-      }
-      return 'Present';
-    },
     duration() {
       return this.calculateDuration(this.start, this.end || DateTime.local());
     },
@@ -115,7 +105,7 @@ export default {
 .overlay {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.5s;
+  transition: max-height 5s;
 }
 
 .event:hover .overlay {
@@ -124,6 +114,23 @@ export default {
 }
 
 .dates {
+  display: block;
   font-size: 0.75rem;
+  margin-bottom: 0.313rem;
+}
+
+.details-link {
+  background-color: #2c3e50;
+  color: #fff;
+  display: inline-block;
+  font-size: 0.625rem;
+  padding: 0.313rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: lighten(#2c3e50, 10%);
+  }
 }
 </style>
