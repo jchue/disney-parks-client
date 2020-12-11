@@ -10,6 +10,11 @@
         {{ event.name }} {{ event.branches }}
       </Event>
     </div>
+    <div class="ruler">
+        <Notch v-for="notch in notches" v-bind:key="notch"
+        v-bind:start="notch" v-bind:end="notch + increment"
+        v-bind:basis="basis" v-bind:epoch="epoch">{{ notch }}</Notch>
+      </div>
   </div>
 </template>
 
@@ -17,18 +22,64 @@
 import axios from 'axios';
 import { DateTime } from 'luxon';
 import Event from '@/components/Event.vue';
+import Notch from '@/components/Notch.vue';
 
 export default {
   components: {
     Event,
+    Notch,
   },
   data() {
     return {
       basis: 23884,
       epoch: '1955-07-17T00:00:00.000Z',
+      increment: 5,
       events: [],
       clumps: [],
     };
+  },
+  computed: {
+    horizon() {
+      // Assume current date as the last date
+      return DateTime.local();
+    },
+    firstNotch() {
+      // epoch: oldest event
+      // increment: number of years per notch
+
+      const epochDate = DateTime.fromISO(this.epoch);
+      let yearToRound;
+
+      // If epoch is precisely Jan 1, use the year
+      // Otherwise, date falls in the middle of the year, so use the following year
+      if (epochDate.month === 1 && epochDate.day === 1) {
+        yearToRound = epochDate.year;
+      } else {
+        yearToRound = epochDate.year + 1;
+      }
+
+      // Round up to the nearest increment
+      return Math.ceil(yearToRound / this.increment) * this.increment;
+    },
+    lastNotch() {
+      // Get year of horizon date
+      const horizonDate = this.horizon;
+      const yearToRound = horizonDate.year;
+
+      // Round down to the nearest increment
+      return Math.floor(yearToRound / this.increment) * this.increment;
+    },
+    notches() {
+      const notches = [];
+      let notch = this.firstNotch;
+
+      do {
+        notches.push(notch);
+        notch += this.increment;
+      } while (notch <= this.lastNotch);
+
+      return notches;
+    },
   },
   async mounted() {
     // Get clumps of root node
@@ -84,7 +135,7 @@ export default {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-.test {
-  color: red;
+.ruler {
+  position: relative;
 }
 </style>
