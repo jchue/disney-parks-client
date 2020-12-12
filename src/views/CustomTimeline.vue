@@ -1,41 +1,49 @@
 <template>
   <div class="timeline">
-    <div v-for="(clump, clumpIndex) in clumps" v-bind:key="clump.name" class="clump">
-      <Event
-      v-for="event in clump.branches" v-bind:key="event._id"
-      v-bind:event="event"
-      v-bind:start="event.startDate" v-bind:end="event.endDate"
-      v-bind:basis="basis" v-bind:epoch="epoch"
-      v-on:click.native="getClumps(event._id, clumpIndex)">
-        {{ event.name }} {{ event.branches }}
-      </Event>
-    </div>
-    <div class="ruler">
-        <Notch v-for="notch in notches" v-bind:key="notch"
-        v-bind:start="notch" v-bind:end="notch + increment"
-        v-bind:basis="basis" v-bind:epoch="epoch">{{ notch }}</Notch>
+    <transition name="fade" mode="out-in">
+      <Loader v-if="loading"></Loader>
+      <div v-if="!loading">
+        <div v-for="(clump, clumpIndex) in clumps" v-bind:key="clump.name" class="clump">
+          <Event
+          v-for="event in clump.branches" v-bind:key="event._id"
+          v-bind:event="event"
+          v-bind:start="event.startDate" v-bind:end="event.endDate"
+          v-bind:basis="basis" v-bind:epoch="epoch"
+          v-on:click.native="getClumps(event._id, clumpIndex)">
+            {{ event.name }} {{ event.branches }}
+          </Event>
+        </div>
+        <div class="ruler">
+            <Notch v-for="notch in notches" v-bind:key="notch"
+            v-bind:start="notch" v-bind:end="notch + increment"
+            v-bind:basis="basis" v-bind:epoch="epoch">{{ notch }}</Notch>
+          </div>
       </div>
+    </transition>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import { DateTime } from 'luxon';
+import Loader from '@/components/Loader.vue';
 import Event from '@/components/Event.vue';
 import Notch from '@/components/Notch.vue';
 
 export default {
   components: {
     Event,
+    Loader,
     Notch,
   },
   data() {
     return {
       basis: 23884,
-      epoch: '1955-07-17T00:00:00.000Z',
-      increment: 5,
-      events: [],
       clumps: [],
+      epoch: '1955-07-17T00:00:00.000Z',
+      events: [],
+      increment: 5,
+      loading: true,
     };
   },
   computed: {
@@ -101,6 +109,8 @@ export default {
 
       // Insert clumps after clump of selected event
       this.clumps.splice((clumpIndex + 1), 0, ...clumps);
+
+      this.loading = false;
     },
     sortClumps(clumps) {
       // Sort the branches within each clump
