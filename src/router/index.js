@@ -24,11 +24,6 @@ const routes = [
     component: () => import('../views/Timeline.vue'),
   },
   {
-    path: '/beta',
-    name: 'CustomTimeline',
-    component: () => import('../views/CustomTimeline.vue'),
-  },
-  {
     path: '/:eventId',
     name: 'Event',
     component: () => import('../views/Event.vue'),

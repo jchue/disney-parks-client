@@ -1,139 +1,151 @@
 <template>
   <div class="timeline">
-    <GChart
-      :settings="{ packages: ['timeline'] }"
-      type="Timeline"
-      @ready="onChartReady"
-      :events="chartEvents"
-      :key="chartKey"
-      ref="gChart"
-    />
+    <transition name="fade" mode="out-in">
+      <Loader v-if="loading"></Loader>
+      <div v-if="!loading">
+        <div v-for="(clump, clumpIndex) in clumps" v-bind:key="clump.name" class="clump">
+          <Event
+          v-for="event in clump.branches" v-bind:key="event._id"
+          v-bind:event="event"
+          v-bind:start="event.startDate" v-bind:end="event.endDate"
+          v-bind:basis="basis" v-bind:epoch="epoch"
+          v-on:click.native="getClumps(event._id, clumpIndex)">
+            {{ event.name }} {{ event.branches }}
+          </Event>
+        </div>
+        <div class="ruler">
+            <Notch v-for="notch in notches" v-bind:key="notch"
+            v-bind:start="notch" v-bind:end="notch + increment"
+            v-bind:basis="basis" v-bind:epoch="epoch">{{ notch }}</Notch>
+          </div>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import { GChart } from 'vue-google-charts';
+import { DateTime } from 'luxon';
+import Loader from '@/components/Loader.vue';
+import Event from '@/components/Event.vue';
+import Notch from '@/components/Notch.vue';
 
 export default {
   components: {
-    GChart,
+    Event,
+    Loader,
+    Notch,
   },
   data() {
     return {
-      chartKey: 0,
-      chartData: [
-        ['group', 'name', 'start', 'end', 'id'],
-      ],
-      chartOptions: {
-        height: 2500,
-        timeline: {
-          colorByRowLabel: true,
-          showRowLabels: false,
-        },
-      },
-      chartEvents: {
-        select: async () => {
-          // Get ID of selected event
-          const table = this.$refs.gChart.chartObject;
-          const selection = table.getSelection();
-          const { row } = selection[0];
-          const id = this.dataTable.getValue(row, 4);
-
-          // Get branches of selected event
-          const branches = await this.getBranches(id);
-
-          // Insert branches
-          if (branches) {
-            this.addBranches(row, branches);
-          }
-        },
-      },
+      basis: 23884,
+      clumps: [],
+      epoch: '1955-07-17T00:00:00.000Z',
+      events: [],
+      increment: 5,
+      loading: true,
     };
   },
-  methods: {
-    getEvents: async function getEvents() {
-      const url = `${process.env.VUE_APP_API}/events`;
-
-      // Retrieve list of events
-      const eventObjects = (await axios.get(url)).data.data;
-
-      // Convert to array format required by Google Charts
-      const eventArrays = eventObjects.map(
-        (event) => [
-          event.heir.name,
-          event.name,
-          new Date(event.startDate),
-          (event.endDate ? new Date(event.endDate) : new Date()),
-          event._id,
-        ],
-      );
-
-      return eventArrays;
+  computed: {
+    horizon() {
+      // Assume current date as the last date
+      return DateTime.local();
     },
-    onChartReady: async function onChartReady(chart, google) {
-      // Retrieve root event and append to chartData if new page
-      if (this.chartKey === 0) {
-        const rootEvent = await this.getEvent('5c78ba6b16a7b09e4c938d80');
-        this.chartData.push(rootEvent);
+    firstNotch() {
+      // epoch: oldest event
+      // increment: number of years per notch
+
+      const epochDate = DateTime.fromISO(this.epoch);
+      let yearToRound;
+
+      // If epoch is precisely Jan 1, use the year
+      // Otherwise, date falls in the middle of the year, so use the following year
+      if (epochDate.month === 1 && epochDate.day === 1) {
+        yearToRound = epochDate.year;
+      } else {
+        yearToRound = epochDate.year + 1;
       }
 
-      // Create dataTable to be accessible externally
-      this.dataTable = await google.visualization.arrayToDataTable(this.chartData);
-
-      // Hide ID column
-      const dataView = new google.visualization.DataView(this.dataTable);
-      dataView.hideColumns([4]);
-
-      chart.draw(dataView, this.chartOptions);
+      // Round up to the nearest increment
+      return Math.ceil(yearToRound / this.increment) * this.increment;
     },
-    getEvent: async function getEvent(id) {
+    lastNotch() {
+      // Get year of horizon date
+      const horizonDate = this.horizon;
+      const yearToRound = horizonDate.year;
+
+      // Round down to the nearest increment
+      return Math.floor(yearToRound / this.increment) * this.increment;
+    },
+    notches() {
+      const notches = [];
+      let notch = this.firstNotch;
+
+      do {
+        notches.push(notch);
+        notch += this.increment;
+      } while (notch <= this.lastNotch);
+
+      return notches;
+    },
+  },
+  async mounted() {
+    // Get clumps of root node
+    this.getClumps('5fcc2795f9da8a9c8487997b', 0);
+  },
+  methods: {
+    calculateDuration(startDate, endDate) {
+      const start = DateTime.fromISO(startDate);
+      const end = DateTime.fromISO(endDate);
+      const duration = end.diff(start, 'days');
+
+      return duration.days;
+    },
+    async getClumps(id, clumpIndex) {
+      // Get clumps of selected event
       const url = `${process.env.VUE_APP_API}/events/${id}`;
+      let { clumps } = (await axios.get(url)).data.data;
+      clumps = this.sortClumps(clumps);
 
-      // Retrieve list of events
-      const eventObject = (await axios.get(url)).data.data;
+      // Insert clumps after clump of selected event
+      this.clumps.splice((clumpIndex + 1), 0, ...clumps);
 
-      // Convert to array format required by Google Charts
-      const eventArray = [
-        eventObject.heir.name,
-        eventObject.name,
-        new Date(eventObject.startDate),
-        (eventObject.endDate ? new Date(eventObject.endDate) : new Date()),
-        eventObject._id,
-      ];
-
-      return eventArray;
+      this.loading = false;
     },
-    getBranches: async function getBranches(id) {
-      const url = `${process.env.VUE_APP_API}/events/${id}/subtree`;
+    sortClumps(clumps) {
+      // Sort the branches within each clump
+      clumps.forEach((clump) => {
+        clump.branches.sort((a, b) => {
+          const startDateA = DateTime.fromISO(a.startDate);
+          const startDateB = DateTime.fromISO(b.startDate);
+          const dateDiff = startDateA.diff(startDateB, 'days');
 
-      const { branches } = (await axios.get(url)).data.data;
+          return dateDiff.days;
+        });
+      });
 
-      return branches;
-    },
-    addBranches: async function addBranches(rowIndex, branchObjects) {
-      // Convert to array format required by Google Charts
-      const branchArrays = branchObjects.map((branch) => [
-        branch.heir.name,
-        branch.name,
-        new Date(branch.startDate),
-        (branch.endDate ? new Date(branch.endDate) : new Date()),
-        branch._id,
-      ]);
+      // Sort the clumps themselves
+      const sortedClumps = clumps.sort((a, b) => {
+        // Compare the earliest branches from each clump
+        const firstStartDateA = DateTime.fromISO(a.branches[0].startDate);
+        const firstStartDateB = DateTime.fromISO(b.branches[0].startDate);
+        const dateDiff = firstStartDateA.diff(firstStartDateB, 'days');
 
-      // Adjust for array index
-      const index = rowIndex + 2;
+        return dateDiff.days;
+      });
 
-      // Splice at new index
-      this.chartData.splice(index, 0, ...branchArrays);
-      this.chartKey += 1;
+      return sortedClumps;
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-#site-body {
-  padding-top: 0rem;
+.clump {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.ruler {
+  position: relative;
 }
 </style>
