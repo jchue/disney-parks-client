@@ -39,7 +39,7 @@ export default {
 
       const heroContentTop = (heroHeight / 2) - (heroContentHeight / 2);
 
-      heroContent.setAttribute('style', `top: ${heroContentTop}px;`);
+      heroContent.setAttribute('style', `margin-top: ${heroContentTop}px;`);
     },
   },
 };
@@ -51,6 +51,8 @@ export default {
 }
 
 #hero {
+  overflow: auto;
+  padding: 0 4rem;
   position: relative;
 
   &::after {
@@ -68,8 +70,7 @@ export default {
 
   #hero-content {
     box-sizing: border-box;
-    margin: 0 4rem;
-    position: absolute;
+    margin: auto;
     text-align: center;
   }
 
