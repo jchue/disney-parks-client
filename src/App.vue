@@ -48,6 +48,7 @@ button {
   background-color: #42b983;
   border: 0;
   color: #fff;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 1rem;
   font-weight: bold;
   padding: 1rem 2rem;
