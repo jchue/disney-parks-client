@@ -56,7 +56,7 @@ export default {
   position: relative;
 
   &::after {
-    background-image: url('https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F28%2F2018%2F11%2Fdisneyland-entrance-opening-DLANDBOOK1118.jpg&q=85');
+    background-image: url('~@/assets/disneyland-retro-sign.jpg');
     background-size: cover;
     bottom: 0;
     content: '';
