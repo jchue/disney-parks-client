@@ -52,9 +52,6 @@ export default {
       return DateTime.local();
     },
     firstNotch() {
-      // epoch: oldest event
-      // increment: number of years per notch
-
       const epochDate = DateTime.fromISO(this.epoch);
       let yearToRound;
 

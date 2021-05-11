@@ -18,30 +18,6 @@
 <script>
 import { DateTime } from 'luxon';
 
-/*
-SIZING
-
-get container width
-basis -> longest event = container width
-1 U = 1 day
-get duration in days = width
-adjusted width = longst = width of screen
-
-container width / longest event = ratio
-ratio x duration = width of each event
-OR just take duration / basis = % of container
-
-POSITIONING
-
-- left position based on start date
-
-|1900----------2000|
-|0%------------100%|
-total = last end date of longest - first start date = basis (same as duration)
-position from left = event start date - epoch / basis * 100 + %
-epoch = first event start date
-*/
-
 export default {
   name: 'Event',
   data() {
@@ -60,12 +36,21 @@ export default {
       return this.calculateDuration(this.start, this.end || DateTime.local());
     },
     positionLeft() {
+      /**
+       * Calculate position based on the number of days from epoch to start of current event
+       * Normalize by calculating as a proportion of the basis
+       * Multiply by 100 for percentage
+       */
       const epochDate = DateTime.fromISO(this.epoch);
       const delay = this.calculateDuration(epochDate, this.start).totalDays.days;
 
       return (delay / this.basis) * 100;
     },
     width() {
+      /**
+       * Calculate width based on the duration of the current event compared to the basis
+       * Multiply by 100 for percentage
+       */
       return (this.duration.totalDays.days / this.basis) * 100;
     },
   },
