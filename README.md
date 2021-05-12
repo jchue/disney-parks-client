@@ -10,6 +10,9 @@ Granted, the latter relationships may pose a more difficult problem, since succe
 
 The API for accessing the data is housed in a separate repository [here](https://github.com/jchue/disney-parks-api).
 
+![](https://user-images.githubusercontent.com/5141427/117774168-0c340280-b1ee-11eb-88b5-3021b478e228.png)
+![](https://user-images.githubusercontent.com/5141427/117774903-cb88b900-b1ee-11eb-9ce5-f241e44a79af.png)
+
 ## Definitions
 
 - **basis:** length of longest event (in days)
