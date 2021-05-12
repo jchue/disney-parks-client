@@ -38,7 +38,6 @@ export default {
   },
   data() {
     return {
-      basis: 23884,
       clumps: [],
       epoch: '1955-07-17T00:00:00.000Z',
       events: [],
@@ -50,6 +49,10 @@ export default {
     horizon() {
       // Assume current date as the last date
       return DateTime.local();
+    },
+    basis() {
+      // Calculate difference between start date of first event and horizon (today)
+      return this.calculateDuration(this.epoch, this.horizon);
     },
     firstNotch() {
       const epochDate = DateTime.fromISO(this.epoch);
@@ -87,6 +90,7 @@ export default {
     },
   },
   async mounted() {
+    console.log(this.basis);
     // Get clumps of root node
     this.getClumps('5fcc2795f9da8a9c8487997b', 0);
   },
