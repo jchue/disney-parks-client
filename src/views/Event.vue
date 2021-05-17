@@ -1,51 +1,59 @@
 <template>
   <div class="event">
-    <div class="wrapper">
-      <header class="page-header">
-        <h1>{{ name }}</h1>
+    <transition name="fade" mode="out-in">
+      <Loader v-if="loading"></Loader>
 
-        <section class="dates">
-        {{ startDate | formatDate }} - {{ endDate | formatDate }}
+      <div v-if="!loading" class="wrapper">
+        <header class="page-header">
+          <h1>{{ name }}</h1>
 
-        ({{ duration.segmented.years }} Years,
-        {{ duration.segmented.months }} Months,
-        {{ Math.floor(duration.segmented.days) }} Days)
+          <section class="dates">
+          {{ startDate | formatDate }} - {{ endDate | formatDate }}
+
+          ({{ duration.segmented.years }} Years,
+          {{ duration.segmented.months }} Months,
+          {{ Math.floor(duration.segmented.days) }} Days)
+          </section>
+
+          <section class="lineage">
+            <span v-if="predecessor" class="predecessor">
+              <router-link v-bind:to="predecessor._id">
+                <strong>Predecessor:</strong> {{ predecessor.name }}
+              </router-link>
+            </span>
+            <span v-if="successor" class="successor">
+              <router-link v-bind:to="successor._id">
+                <strong>Successor:</strong> {{ successor.name }}
+              </router-link>
+            </span>
+          </section>
+        </header>
+
+        <p v-html="description"></p>
+
+        <section v-if="branches" class="branches">
+          <h2>Members</h2>
+
+          <ul>
+            <li v-for="branch in branches" v-bind:key="branch._id">
+              <router-link v-bind:to="branch._id">{{ branch.name }}</router-link>
+            </li>
+          </ul>
         </section>
-
-        <section class="lineage">
-          <span v-if="predecessor" class="predecessor">
-            <router-link v-bind:to="predecessor._id">
-              <strong>Predecessor:</strong> {{ predecessor.name }}
-            </router-link>
-          </span>
-          <span v-if="successor" class="successor">
-            <router-link v-bind:to="successor._id">
-              <strong>Successor:</strong> {{ successor.name }}
-            </router-link>
-          </span>
-        </section>
-      </header>
-
-      <p v-html="description"></p>
-
-      <section v-if="branches" class="branches">
-        <h2>Members</h2>
-
-        <ul>
-          <li v-for="branch in branches" v-bind:key="branch._id">
-            <router-link v-bind:to="branch._id">{{ branch.name }}</router-link>
-          </li>
-        </ul>
-      </section>
-    </div>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import { DateTime } from 'luxon';
+import Loader from '@/components/Loader.vue';
 
 export default {
+  components: {
+    Loader,
+  },
   data() {
     return {
       name: '',
@@ -55,6 +63,7 @@ export default {
       predecessor: null,
       successor: null,
       branches: [],
+      loading: true,
     };
   },
   computed: {
@@ -73,6 +82,7 @@ export default {
     this.predecessor = response.predecessor;
     this.successor = response.successor;
     this.branches = response.branches;
+    this.loading = false;
   },
   methods: {
     calculateDuration(startDate, endDate) {
