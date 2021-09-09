@@ -17,12 +17,12 @@
 
           <section class="lineage">
             <span v-if="predecessor" class="predecessor">
-              <router-link v-bind:to="predecessor._id">
+              <router-link v-bind:to="predecessor.slug">
                 <strong>Predecessor:</strong> {{ predecessor.name }}
               </router-link>
             </span>
             <span v-if="successor" class="successor">
-              <router-link v-bind:to="successor._id">
+              <router-link v-bind:to="successor.slug">
                 <strong>Successor:</strong> {{ successor.name }}
               </router-link>
             </span>
@@ -35,8 +35,8 @@
           <h2>Members</h2>
 
           <ul>
-            <li v-for="branch in branches" v-bind:key="branch._id">
-              <router-link v-bind:to="branch._id">{{ branch.name }}</router-link>
+            <li v-for="branch in branches" v-bind:key="branch.slug">
+              <router-link v-bind:to="branch.slug">{{ branch.name }}</router-link>
             </li>
           </ul>
         </section>
@@ -72,11 +72,11 @@ export default {
     },
   },
   async mounted() {
-    const url = `${process.env.VUE_APP_API}/events/${this.$route.params.eventId}`;
+    const url = `${process.env.VUE_APP_API}/${this.$route.params.eventId}`;
     const response = (await axios.get(url)).data.data;
 
     this.name = response.name;
-    this.description = response.description;
+    this.description = response.content;
     this.startDate = response.startDate;
     this.endDate = response.endDate;
     this.predecessor = response.predecessor;

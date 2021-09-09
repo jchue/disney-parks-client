@@ -5,11 +5,11 @@
       <div v-if="!loading">
         <div v-for="(clump, clumpIndex) in clumps" v-bind:key="clump.name" class="clump">
           <Event
-          v-for="event in clump.branches" v-bind:key="event._id"
+          v-for="event in clump.branches" v-bind:key="event.slug"
           v-bind:event="event"
           v-bind:start="event.startDate" v-bind:end="event.endDate"
           v-bind:basis="basis" v-bind:epoch="epoch"
-          v-on:click.native="getClumps(event._id, clumpIndex)">
+          v-on:click.native="getClumps(event.slug, clumpIndex)">
             {{ event.name }} {{ event.branches }}
           </Event>
         </div>
@@ -92,7 +92,7 @@ export default {
   async mounted() {
     console.log(this.basis);
     // Get clumps of root node
-    this.getClumps('5fcc2795f9da8a9c8487997b', 0);
+    this.getClumps('root', 0);
   },
   methods: {
     calculateDuration(startDate, endDate) {
@@ -104,7 +104,7 @@ export default {
     },
     async getClumps(id, clumpIndex) {
       // Get clumps of selected event
-      const url = `${process.env.VUE_APP_API}/events/${id}`;
+      const url = `${process.env.VUE_APP_API}/${id}`;
       let { clumps } = (await axios.get(url)).data.data;
       clumps = this.sortClumps(clumps);
 

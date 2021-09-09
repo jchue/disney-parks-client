@@ -10,7 +10,7 @@
         {{ Math.floor(duration.segmented.days) }} Days)
       </span>
 
-      <router-link v-bind:to="event._id" class="details-link">Details</router-link>
+      <router-link v-bind:to="event.slug" class="details-link">Details</router-link>
     </div>
   </div>
 </template>
