@@ -16,16 +16,20 @@
           </section>
 
           <section class="lineage">
-            <span v-if="predecessor" class="predecessor">
-              <router-link v-bind:to="predecessor.slug">
-                <strong>Predecessor:</strong> {{ predecessor.name }}
-              </router-link>
-            </span>
-            <span v-if="successor" class="successor">
-              <router-link v-bind:to="successor.slug">
-                <strong>Successor:</strong> {{ successor.name }}
-              </router-link>
-            </span>
+            <div class="predecessors">
+              <span v-if="predecessor" class="predecessor">
+                <router-link v-bind:to="predecessor.slug">
+                  <strong>Predecessor:</strong> {{ predecessor.name }}
+                </router-link>
+              </span>
+            </div>
+            <div class="successors">
+              <span v-for="successor in successors" v-bind:key="successor.slug" class="successor">
+                <router-link v-bind:to="successor.slug">
+                  <strong>Successor:</strong> {{ successor.name }}
+                </router-link>
+              </span>
+            </div>
           </section>
         </header>
 
@@ -61,7 +65,7 @@ export default {
       startDate: '',
       endDate: '',
       predecessor: null,
-      successor: null,
+      successors: [],
       branches: [],
       loading: true,
     };
@@ -80,7 +84,7 @@ export default {
     this.startDate = response.startDate;
     this.endDate = response.endDate;
     this.predecessor = response.predecessor;
-    this.successor = response.successor;
+    this.successors = response.successors;
     this.branches = response.branches;
     this.loading = false;
   },
@@ -108,9 +112,25 @@ export default {
 }
 
 .lineage {
+  .predecessors,
+  .successors {
+    display: inline-block;
+    margin: 0 1px;
+    vertical-align: middle;
+  }
+
   .predecessor,
   .successor {
-    margin: 0 1px;
+    display: block;
+    margin: 2px 0;
+  }
+
+  .predecessor {
+    text-align: right;
+  }
+
+  .successor {
+    text-align: left;
   }
 
   .predecessor a,
