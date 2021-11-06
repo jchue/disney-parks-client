@@ -18,14 +18,14 @@
           <section class="lineage">
             <div class="predecessors">
               <span v-if="predecessor" class="predecessor">
-                <router-link v-bind:to="predecessor.slug">
+                <router-link v-bind:to="`/${predecessor.slug}`">
                   <strong>Predecessor:</strong> {{ predecessor.name }}
                 </router-link>
               </span>
             </div>
             <div class="successors">
               <span v-for="successor in successors" v-bind:key="successor.slug" class="successor">
-                <router-link v-bind:to="successor.slug">
+                <router-link v-bind:to="`/${successor.slug}`">
                   <strong>Successor:</strong> {{ successor.name }}
                 </router-link>
               </span>
@@ -76,7 +76,7 @@ export default {
     },
   },
   async mounted() {
-    const url = `${process.env.VUE_APP_API}/${this.$route.params.eventId}`;
+    const url = `${process.env.VUE_APP_API}/${this.$route.params.slug}`;
     const response = (await axios.get(url)).data.data;
 
     this.name = response.name;

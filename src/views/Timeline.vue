@@ -92,7 +92,7 @@ export default {
   async mounted() {
     console.log(this.basis);
     // Get clumps of root node
-    this.getClumps('root', 0);
+    this.getClumps('timeline', 0);
   },
   methods: {
     calculateDuration(startDate, endDate) {

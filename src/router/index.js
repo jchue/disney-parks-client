@@ -24,7 +24,7 @@ const routes = [
     component: () => import('../views/Timeline.vue'),
   },
   {
-    path: '/:eventId',
+    path: '/:slug(.*)',
     name: 'Event',
     component: () => import('../views/Event.vue'),
   },
