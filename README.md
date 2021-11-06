@@ -2,11 +2,13 @@
 
 ## Overview
 
-This is a personal project that I'm using to learn about creating a RESTful API with Express and Mongoose as an ODM for MongoDB (a "MEN" stack, if you will).
+This is a personal project that I'm using to learn about creating a full-stack web application with a Vue front-end with data coming from a static API back-end.
 
 The concept is a hierarchical timeline of the Disney parks and the attractions contained within as sub-entities. The data describes both the parent-child relationships between entities (e.g., Space Mountain is contained within Tomorrowland, which is contained within Disneyland, which is contained within Disneyland Resort.) as well as the predecessor-successor relationships (e.g., Star Tours replaced Adventure Thru Inner Space, which replaced the Monsanto House of Chemistry.)
 
 Granted, the latter relationships may pose a more difficult problem, since succession is not always straightforward. In other words, it can be defined as the replacement of an attraction within a physical space or a more conceptual/spiritual replacement. Additionally, when dealing with physical succession, a predecessor may be larger and may be replaced by multiple successors, and vice-versa. These issues are going to need to be analyzed further before a suitable data model is finalized.
+
+Initially, I used the Google Charts library but soon found that it didn't fulfill all the requirements of this hierarchical paradigm. So I've built this timeline from scratch.
 
 The API for accessing the data is housed in a separate repository [here](https://github.com/jchue/disney-parks-api).
 
