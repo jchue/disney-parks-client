@@ -1,5 +1,5 @@
 <template>
-  <div class="event" v-bind:style="'margin-left: ' + positionLeft + '%; width: ' + width + '%;'">
+  <div class="node" v-bind:style="'margin-left: ' + positionLeft + '%; width: ' + width + '%;'">
     <span class="name"><slot></slot></span>
     <div class="overlay">
       <span class="dates">
@@ -10,7 +10,7 @@
         {{ Math.floor(duration.segmented.days) }} Days)
       </span>
 
-      <router-link v-bind:to="event.slug" class="details-link">Details</router-link>
+      <router-link v-bind:to="node.slug" class="details-link">Details</router-link>
     </div>
   </div>
 </template>
@@ -19,13 +19,13 @@
 import { DateTime } from 'luxon';
 
 export default {
-  name: 'Event',
+  name: 'Node',
   data() {
     return {
     };
   },
   props: {
-    event: Object,
+    node: Object,
     basis: Number,
     epoch: String,
     start: String,
@@ -37,7 +37,7 @@ export default {
     },
     positionLeft() {
       /**
-       * Calculate position based on the number of days from epoch to start of current event
+       * Calculate position based on the number of days from epoch to start of current node
        * Normalize by calculating as a proportion of the basis
        * Multiply by 100 for percentage
        */
@@ -48,7 +48,7 @@ export default {
     },
     width() {
       /**
-       * Calculate width based on the duration of the current event compared to the basis
+       * Calculate width based on the duration of the current node compared to the basis
        * Multiply by 100 for percentage
        */
       return (this.duration.totalDays.days / this.basis) * 100;
@@ -68,7 +68,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.event {
+.node {
   background-color: #79b898;
   box-sizing: border-box;
   font-size: 0.875rem;
@@ -93,7 +93,7 @@ export default {
   transition: max-height 5s;
 }
 
-.event:hover .overlay {
+.node:hover .overlay {
   max-height: 999rem;
   overflow: visible;
 }

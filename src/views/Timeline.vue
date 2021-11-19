@@ -3,15 +3,18 @@
     <transition name="fade" mode="out-in">
       <Loader v-if="loading"></Loader>
       <div v-if="!loading">
-        <div v-for="(clump, clumpIndex) in clumps" v-bind:key="clump.name" class="clump">
-          <Event
-          v-for="event in clump.branches" v-bind:key="event.slug"
-          v-bind:event="event"
-          v-bind:start="event.startDate" v-bind:end="event.endDate"
+        <div
+          v-for="(subgroup, subgroupIndex) in subgroups"
+          v-bind:key="subgroup.name"
+          class="subgroup">
+          <Node
+          v-for="node in subgroup.subnodes" v-bind:key="node.slug"
+          v-bind:node="node"
+          v-bind:start="node.startDate" v-bind:end="node.endDate"
           v-bind:basis="basis" v-bind:epoch="epoch"
-          v-on:click.native="getClumps(event.slug, clumpIndex)">
-            {{ event.name }} {{ event.branches }}
-          </Event>
+          v-on:click.native="getSubgroups(node.slug, subgroupIndex)">
+            {{ node.name }} {{ node.subnodes }}
+          </Node>
         </div>
         <div class="ruler">
             <Notch v-for="notch in notches" v-bind:key="notch"
@@ -27,20 +30,20 @@
 import axios from 'axios';
 import { DateTime } from 'luxon';
 import Loader from '@/components/Loader.vue';
-import Event from '@/components/Event.vue';
+import Node from '@/components/Node.vue';
 import Notch from '@/components/Notch.vue';
 
 export default {
   components: {
-    Event,
+    Node,
     Loader,
     Notch,
   },
   data() {
     return {
-      clumps: [],
+      subgroups: [],
       epoch: '1955-07-17T00:00:00.000Z',
-      events: [],
+      nodes: [],
       increment: 5,
       loading: true,
     };
@@ -51,7 +54,7 @@ export default {
       return DateTime.local();
     },
     basis() {
-      // Calculate difference between start date of first event and horizon (today)
+      // Calculate difference between start date of first node and horizon (today)
       return this.calculateDuration(this.epoch, this.horizon);
     },
     firstNotch() {
@@ -91,8 +94,8 @@ export default {
   },
   async mounted() {
     console.log(this.basis);
-    // Get clumps of root node
-    this.getClumps('timeline', 0);
+    // Get subgroups of root node
+    this.getSubgroups('timeline', 0);
   },
   methods: {
     calculateDuration(startDate, endDate) {
@@ -102,21 +105,21 @@ export default {
 
       return duration.days;
     },
-    async getClumps(id, clumpIndex) {
-      // Get clumps of selected event
+    async getSubgroups(id, subgroupIndex) {
+      // Get subgroups of selected node
       const url = `${process.env.VUE_APP_API}/${id}`;
-      let { clumps } = (await axios.get(url)).data.data;
-      clumps = this.sortClumps(clumps);
+      let { subgroups } = (await axios.get(url)).data.data;
+      subgroups = this.sortSubgroups(subgroups);
 
-      // Insert clumps after clump of selected event
-      this.clumps.splice((clumpIndex + 1), 0, ...clumps);
+      // Insert subgroups after subgroup of selected node
+      this.subgroups.splice((subgroupIndex + 1), 0, ...subgroups);
 
       this.loading = false;
     },
-    sortClumps(clumps) {
-      // Sort the branches within each clump
-      clumps.forEach((clump) => {
-        clump.branches.sort((a, b) => {
+    sortSubgroups(subgroups) {
+      // Sort the subnodes within each subgroup
+      subgroups.forEach((subgroup) => {
+        subgroup.subnodes.sort((a, b) => {
           const startDateA = DateTime.fromISO(a.startDate);
           const startDateB = DateTime.fromISO(b.startDate);
           const dateDiff = startDateA.diff(startDateB, 'days');
@@ -125,24 +128,24 @@ export default {
         });
       });
 
-      // Sort the clumps themselves
-      const sortedClumps = clumps.sort((a, b) => {
-        // Compare the earliest branches from each clump
-        const firstStartDateA = DateTime.fromISO(a.branches[0].startDate);
-        const firstStartDateB = DateTime.fromISO(b.branches[0].startDate);
+      // Sort the subgroups themselves
+      const sortedSubgroups = subgroups.sort((a, b) => {
+        // Compare the earliest subnodes from each subgroup
+        const firstStartDateA = DateTime.fromISO(a.subnodes[0].startDate);
+        const firstStartDateB = DateTime.fromISO(b.subnodes[0].startDate);
         const dateDiff = firstStartDateA.diff(firstStartDateB, 'days');
 
         return dateDiff.days;
       });
 
-      return sortedClumps;
+      return sortedSubgroups;
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.clump {
+.subgroup {
   background-color: rgba(0, 0, 0, 0.1);
 }
 

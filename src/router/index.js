@@ -25,8 +25,8 @@ const routes = [
   },
   {
     path: '/:slug(.*)',
-    name: 'Event',
-    component: () => import('../views/Event.vue'),
+    name: 'Node',
+    component: () => import('../views/Node.vue'),
   },
 ];
 

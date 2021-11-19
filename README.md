@@ -17,15 +17,16 @@ The API for accessing the data is housed in a separate repository [here](https:/
 
 ## Definitions
 
-- **basis:** length of longest event (in days)
+- **basis:** length of longest node (in days)
 - **horizon:** rightmost/latest date on the timeline
-- **epoch:** start date of oldest event (i.e., the leftmost/first date on the timeline)
+- **epoch:** start date of oldest node (i.e., the leftmost/first date on the timeline)
 - **increment:** number of years per notch
-- **clump:** a logical predecessor/successor grouping of related attractions/events
+
+Additional definitions are in [disney-parks-api](https://github.com/jchue/disney-parks-api).
 
 ## Calculations
 
-Everything is normalized as a percentage of the **basis**, which is the duration of the longest event displayed.
+Everything is normalized as a percentage of the **basis**, which is the duration of the longest node displayed.
 
 ### Sizing
 
@@ -33,7 +34,7 @@ Everything is normalized as a percentage of the **basis**, which is the duration
 1. Normalize the duration by dividing by the basis
 1. Multiply by 100 to convert to a percentage
 
-(The longest event in the timeline sets the context, because it calculates to 100%, thus establishing the basis.)
+(The longest node in the timeline sets the context, because it calculates to 100%, thus establishing the basis.)
 
 ### Positioning
 

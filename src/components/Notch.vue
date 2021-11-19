@@ -26,7 +26,7 @@ export default {
     },
     positionLeft() {
       /**
-       * Calculate position based on the number of days from epoch to start of current event
+       * Calculate position based on the number of days from epoch to start of current node
        * Normalize by calculating as a proportion of the basis
        * Multiply by 100 for percentage
        */
@@ -37,7 +37,7 @@ export default {
     },
     width() {
       /**
-       * Calculate width based on the duration of the current event compared to the basis
+       * Calculate width based on the duration of the current node compared to the basis
        * Multiply by 100 for percentage
        */
       return (this.duration.totalDays.days / this.basis) * 100;

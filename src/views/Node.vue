@@ -1,5 +1,5 @@
 <template>
-  <div class="event">
+  <div class="node">
     <transition name="fade" mode="out-in">
       <Loader v-if="loading"></Loader>
 
@@ -35,12 +35,12 @@
 
         <p v-html="description"></p>
 
-        <section v-if="branches" class="branches">
+        <section v-if="subnodes" class="subnodes">
           <h2>Members</h2>
 
           <ul>
-            <li v-for="branch in branches" v-bind:key="branch.slug">
-              <router-link v-bind:to="branch.slug">{{ branch.name }}</router-link>
+            <li v-for="subnode in subnodes" v-bind:key="subnode.slug">
+              <router-link v-bind:to="subnode.slug">{{ subnode.name }}</router-link>
             </li>
           </ul>
         </section>
@@ -66,7 +66,7 @@ export default {
       endDate: '',
       predecessor: null,
       successors: [],
-      branches: [],
+      subnodes: [],
       loading: true,
     };
   },
@@ -85,7 +85,7 @@ export default {
     this.endDate = response.endDate;
     this.predecessor = response.predecessor;
     this.successors = response.successors;
-    this.branches = response.branches;
+    this.subnodes = response.subnodes;
     this.loading = false;
   },
   methods: {
