@@ -44,6 +44,10 @@
             </li>
           </ul>
         </section>
+
+        <footer class="page-footer">
+          <a v-bind:href="sourceFileUrl">Edit this page</a>
+        </footer>
       </div>
     </transition>
   </div>
@@ -61,6 +65,7 @@ export default {
   data() {
     return {
       name: '',
+      sourceFileUrl: '',
       description: '',
       startDate: '',
       endDate: '',
@@ -77,6 +82,7 @@ export default {
   },
   async mounted() {
     const url = `${process.env.VUE_APP_API}/${this.$route.params.slug}`;
+    const sourceFileBaseUrl = process.env.VUE_APP_SOURCE_FILE_BASE_URL;
     const response = (await axios.get(url)).data.data;
 
     this.name = response.name;
@@ -85,6 +91,9 @@ export default {
     this.endDate = response.endDate;
     this.predecessor = response.predecessor;
     this.successors = response.successors;
+
+    // Check whether source is directory with index file
+    this.sourceFileUrl = sourceFileBaseUrl + response.slug + (response.fileName === 'index' ? '/index.md' : '.md');
 
     // Iterate through subgroups to collect subnodes
     response.subgroups.forEach((subgroup) => {
@@ -187,5 +196,10 @@ export default {
   .successor:hover::after {
     border-left: 1rem solid lighten(#42b983, 10%);
   }
+}
+
+.page-footer {
+  margin: 2rem 0;
+  text-align: right;
 }
 </style>
