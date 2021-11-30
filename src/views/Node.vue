@@ -35,12 +35,12 @@
 
         <p v-html="description"></p>
 
-        <section v-if="subnodes" class="subnodes">
+        <section v-if="subnodes.length" class="subnodes">
           <h2>Members</h2>
 
           <ul>
             <li v-for="subnode in subnodes" v-bind:key="subnode.slug">
-              <router-link v-bind:to="subnode.slug">{{ subnode.name }}</router-link>
+              <router-link v-bind:to="`/${subnode.slug}`">{{ subnode.name }}</router-link>
             </li>
           </ul>
         </section>
@@ -85,7 +85,12 @@ export default {
     this.endDate = response.endDate;
     this.predecessor = response.predecessor;
     this.successors = response.successors;
-    this.subnodes = response.subnodes;
+
+    // Iterate through subgroups to collect subnodes
+    response.subgroups.forEach((subgroup) => {
+      this.subnodes.push(...subgroup.subnodes);
+    });
+
     this.loading = false;
   },
   methods: {

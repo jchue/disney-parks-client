@@ -3,8 +3,8 @@
     <div class="wrapper">
       <h1>About</h1>
 
-      <p>This is a personal project that I'm using to learn about creating a RESTful API
-        with Express and Mongoose as an ODM for MongoDB (a "MEN" stack, if you will).</p>
+      <p>This is a personal project that I'm using to learn about creating a full-stack
+        web application with a Vue front-end with data coming from a static API back-end.</p>
 
       <p>The concept is a hierarchical timeline of the Disney parks and the attractions
         contained within as sub-entities. The data describes both the parent-child relationships

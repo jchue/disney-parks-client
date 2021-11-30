@@ -34,7 +34,7 @@ a {
   transition: color 0.2s;
 
   &:hover {
-    color: lighten(#2c3e50, 25%);
+    color: #42b983;
   }
 }
 
