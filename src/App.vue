@@ -25,8 +25,10 @@ body {
 }
 
 p,
-li {
+ol,
+ul {
   line-height: 1.8;
+  margin: 0 0 1.5rem 0;
 }
 
 a {
@@ -60,6 +62,24 @@ button {
   }
 }
 
+figure {
+  display: table;
+  margin: 0 0 1rem 0;
+
+  img {
+    display: block;
+    margin-bottom: 0.5rem;
+    max-width: 100%;
+  }
+}
+
+figcaption {
+  display: table-caption;
+  caption-side: bottom;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
 .wrapper {
   margin: auto;
   max-width: 60rem;
@@ -68,7 +88,7 @@ button {
 
 .align-left {
   float: left;
-  margin-right: 1rem;
+  margin-right: 1.5rem;
 }
 
 .align-center {
@@ -78,7 +98,7 @@ button {
 
 .align-right {
   float: right;
-  margin-left: 1rem;
+  margin-left: 1.5rem;
 }
 
 .fade-enter-active, .fade-leave-active {

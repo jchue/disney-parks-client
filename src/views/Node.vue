@@ -15,15 +15,15 @@
           {{ Math.floor(duration.segmented.days) }} Days)
           </section>
 
-          <section class="lineage">
-            <div class="predecessors">
-              <span v-if="predecessor" class="predecessor">
+          <section v-if="predecessor || successors" class="lineage">
+            <div v-if="predecessor" class="predecessors">
+              <span class="predecessor">
                 <router-link v-bind:to="`/${predecessor.slug}`">
                   <strong>Predecessor:</strong> {{ predecessor.name }}
                 </router-link>
               </span>
             </div>
-            <div class="successors">
+            <div v-if="successors" class="successors">
               <span v-for="successor in successors" v-bind:key="successor.slug" class="successor">
                 <router-link v-bind:to="`/${successor.slug}`">
                   <strong>Successor:</strong> {{ successor.name }}
