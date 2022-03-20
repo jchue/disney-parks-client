@@ -2,15 +2,14 @@
   <div id="app">
     <header id="site-header">
       <span id="site-title">Disney Parks Timeline Project</span>
-
-      <nav id="site-nav">
+    </header>
+    <nav id="site-nav">
         <ul>
           <li><router-link to="/">Home</router-link></li>
           <li><router-link to="/timeline">Timeline</router-link></li>
           <li><router-link to="/about">About</router-link></li>
         </ul>
       </nav>
-    </header>
     <transition name="fade" mode="out-in">
       <router-view :key="$route.fullPath" id="site-body"/>
     </transition>
@@ -40,6 +39,13 @@ a {
   }
 }
 
+hr {
+  background-color: #ddd;
+  border: none;
+  height: 1px;
+  margin: 0 0 1.5rem 0;
+}
+
 img {
   display: block;
   margin-bottom: 1rem;
@@ -63,21 +69,35 @@ button {
 }
 
 figure {
-  display: table;
-  margin: 0 0 1rem 0;
+  background-color: #fff;
+  box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.15);
+  display: inline-block;
+  margin: 0 0 1.5rem 0;
+  max-width: 100%;
+  padding: 1rem;
 
   img {
     display: block;
-    margin-bottom: 0.5rem;
-    max-width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  /* Alternate centering technique required due to inline-block */
+  &.align-center {
+    left: 50%;
+    position: relative;
+    transform: translateX(-50%);
+    z-index: -1;
   }
 }
 
 figcaption {
-  display: table-caption;
-  caption-side: bottom;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   line-height: 1.4;
+  padding: 0 0.5rem;
+
+  /* Workaround for wrapping text */
+  min-width: 100%;
+  width: 0;
 }
 
 .wrapper {
@@ -123,9 +143,11 @@ figcaption {
 }
 
 #site-header {
-  box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.25);
+  background-color: #fff;
   padding-top: 2rem;
+  position: relative;
   text-align: center;
+  z-index: 1;
 }
 
 #site-title {
@@ -136,6 +158,12 @@ figcaption {
 }
 
 #site-nav {
+  background-color: #fff;
+  box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.25);
+  position: sticky;
+  text-align: center;
+  top: 0;
+
   ul {
     border-top: 1px solid #ddd;
     display: inline-block;
