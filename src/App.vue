@@ -86,7 +86,6 @@ figure {
     left: 50%;
     position: relative;
     transform: translateX(-50%);
-    z-index: -1;
   }
 }
 
@@ -147,7 +146,7 @@ figcaption {
   padding-top: 2rem;
   position: relative;
   text-align: center;
-  z-index: 1;
+  z-index: 2;
 }
 
 #site-title {
@@ -163,6 +162,7 @@ figcaption {
   position: sticky;
   text-align: center;
   top: 0;
+  z-index: 1;
 
   ul {
     border-top: 1px solid #ddd;

@@ -150,6 +150,11 @@ export default {
 }
 
 .ruler {
-  position: relative;
+  background-color: #fff;
+  bottom: 0;
+  height: 2.5rem;
+  left: 0;
+  position: fixed;
+  right: 0;
 }
 </style>
